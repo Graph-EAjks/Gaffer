@@ -94,8 +94,9 @@ class CyclesShaderTest( GafferSceneTest.SceneTestCase ) :
 		script["fileName"].setValue( pathlib.Path( __file__ ).parent / "scripts" / "principledBSDF-3.x.gfr" )
 		script.load()
 
-		self.assertIn( "emission_color", script["principled_bsdf"]["parameters"] )
-		self.assertNotIn( "emission", script["principled_bsdf"]["parameters"] )
+		childNames = [ x.getName() for x in script["principled_bsdf"]["parameters"].children() ]
+		self.assertIn( "emission_color", childNames )
+		self.assertNotIn( "emission", childNames )
 		self.assertEqual( script["principled_bsdf"]["parameters"]["emission_color"].getValue(), imath.Color3f( 0.5, 0.6, 0.7 ) )
 
 if __name__ == "__main__":

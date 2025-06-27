@@ -87,8 +87,9 @@ class CyclesOptionsTest( GafferSceneTest.SceneTestCase ) :
 		script["fileName"].setValue( pathlib.Path( __file__ ).parent / "scripts" / "cyclesOptions-1.5.14.0.gfr" )
 		script.load()
 
-		self.assertIn( "cycles:session:samples", script["CyclesOptions"]["options"] )
-		self.assertNotIn( "samples", script["CyclesOptions"]["options"] )
+		childNames = [ x.getName() for x in script["CyclesOptions"]["options"].children() ]
+		self.assertIn( "cycles:session:samples", childNames )
+		self.assertNotIn( "samples", childNames )
 		self.assertEqual( script["CyclesOptions"]["options"]["cycles:session:samples"]["value"].getValue(), 1 )
 
 if __name__ == "__main__":

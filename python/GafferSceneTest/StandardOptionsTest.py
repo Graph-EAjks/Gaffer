@@ -140,8 +140,9 @@ class StandardOptionsTest( GafferSceneTest.SceneTestCase ) :
 		script["fileName"].setValue( pathlib.Path( __file__ ).parent / "scripts" / "standardOptions-1.5.14.0.gfr" )
 		script.load()
 
-		self.assertIn( "render:camera", script["StandardOptions"]["options"] )
-		self.assertNotIn( "renderCamera", script["StandardOptions"]["options"] )
+		childNames = [ x.getName() for x in script["StandardOptions"]["options"].children() ]
+		self.assertIn( "render:camera", childNames )
+		self.assertNotIn( "renderCamera", childNames )
 		self.assertEqual( script["StandardOptions"]["options"]["render:camera"]["value"].getValue(), "test" )
 
 if __name__ == "__main__":
