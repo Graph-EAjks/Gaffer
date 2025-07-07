@@ -43,6 +43,7 @@ Fixes
   - Fixed missing history entries when two edits have the same source plug.
   - Fixed potential crashes in `Show History...`.
   - Fixed potential UI lag in `Show History...`.
+- PathListingWidget : Prevented emission of `updateFinishedSignal()` when a new update is pending anyway.
 
 API
 ---
