@@ -187,9 +187,8 @@ class StandardAttributesTest( GafferSceneTest.SceneTestCase ) :
 		script["fileName"].setValue( pathlib.Path( __file__ ).parent / "scripts" / "standardAttributes-1.5.14.0.gfr" )
 		script.load()
 
-		childNames = [ x.getName() for x in script["StandardAttributes"]["attributes"].children() ]
-		self.assertIn( "render:displayColor", childNames )
-		self.assertNotIn( "displayColor", childNames )
+		self.assertIn( "render:displayColor", script["StandardAttributes"]["attributes"].keys() )
+		self.assertNotIn( "displayColor", script["StandardAttributes"]["attributes"].keys() )
 		self.assertEqual( script["StandardAttributes"]["attributes"]["render:displayColor"]["value"].getValue(), imath.Color3f( 0.1, 0.2, 0.3 ) )
 
 if __name__ == "__main__":

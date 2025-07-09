@@ -85,9 +85,8 @@ class CyclesAttributesTest( GafferSceneTest.SceneTestCase ) :
 		script["fileName"].setValue( pathlib.Path( __file__ ).parent / "scripts" / "cyclesAttributes-1.5.14.0.gfr" )
 		script.load()
 
-		childNames = [ x.getName() for x in script["CyclesAttributes"]["attributes"].children() ]
-		self.assertIn( "cycles:asset_name", childNames )
-		self.assertNotIn( "assetName", childNames )
+		self.assertIn( "cycles:asset_name", script["CyclesAttributes"]["attributes"].keys() )
+		self.assertNotIn( "assetName", script["CyclesAttributes"]["attributes"].keys() )
 		self.assertEqual( script["CyclesAttributes"]["attributes"]["cycles:asset_name"]["value"].getValue(), "test" )
 
 if __name__ == "__main__":

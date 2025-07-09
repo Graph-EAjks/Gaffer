@@ -86,9 +86,8 @@ class DelightAttributesTest( GafferSceneTest.SceneTestCase ) :
 		script["fileName"].setValue( pathlib.Path( __file__ ).parent / "scripts" / "delightAttributes-1.5.14.0.gfr" )
 		script.load()
 
-		childNames = [ x.getName() for x in script["DelightAttributes"]["attributes"].children() ]
-		self.assertIn( "dl:matte", childNames )
-		self.assertNotIn( "matte", childNames )
+		self.assertIn( "dl:matte", script["DelightAttributes"]["attributes"].keys() )
+		self.assertNotIn( "matte", script["DelightAttributes"]["attributes"].keys() )
 		self.assertEqual( script["DelightAttributes"]["attributes"]["dl:matte"]["value"].getValue(), True )
 
 if __name__ == "__main__":
