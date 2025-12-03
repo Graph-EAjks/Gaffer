@@ -668,9 +668,7 @@ class ShaderTest( GafferSceneTest.SceneTestCase ) :
 		self.assertEqual(
 			network.inputConnections( "n1" ), [
 				network.Connection( network.Parameter( "inN1", "c", ), network.Parameter( "n1", "spline[0].y" ) ),
-				network.Connection( network.Parameter( "inN1", "c", ), network.Parameter( "n1", "spline[1].y" ) ),
-				network.Connection( network.Parameter( "inN1", "c.g", ), network.Parameter( "n1", "spline[3].y.b" ) ),
-				network.Connection( network.Parameter( "inN1", "c.g", ), network.Parameter( "n1", "spline[4].y.b" ) )
+				network.Connection( network.Parameter( "inN1", "c.g", ), network.Parameter( "n1", "spline[2].y.b" ) )
 			]
 		)
 
@@ -692,9 +690,7 @@ class ShaderTest( GafferSceneTest.SceneTestCase ) :
 		)
 
 		n1["parameters"]["spline"]["interpolation"].setValue( IECore.RampInterpolation.MonotoneCubic )
-
-		with self.assertRaisesRegex( RuntimeError, "n1.__outAttributes : Cannot support monotone cubic interpolation for splines with inputs, for plug n1.parameters.spline" ):
-			network = n1.attributes()["test:surface"]
+		network = n1.attributes()["test:surface"]
 
 	def testOptionalParameter( self ) :
 
