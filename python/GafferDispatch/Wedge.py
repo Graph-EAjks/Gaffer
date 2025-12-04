@@ -128,7 +128,7 @@ class Wedge( GafferDispatch.TaskContextProcessor ) :
 
 		elif mode == self.Mode.ColorRange :
 
-			spline = self["ramp"].getValue().spline()
+			spline = self["ramp"].getValue().evaluator()
 			steps = self["colorSteps"].getValue()
 			values = [ spline( i / float( steps - 1 ) ) for i in range( 0, steps ) ]
 
