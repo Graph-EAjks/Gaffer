@@ -1021,6 +1021,11 @@ ShaderNetworkPtr preprocessedNetwork( const ShaderNetwork *shaderNetwork )
 {
 	ShaderNetworkPtr result = shaderNetwork->copy();
 
+	// Technically, this should be the OSL version used by 3Delight, rather than currently being the
+	// OSL version we are compiled with. However, currently the only test on OSL version is whether it
+	// is newer than 1.10, which should currently always be true, so this doesn't really matter. If a
+	// future OSL version introduces a new feature we want to take advantage of in this function, we
+	// may need to put some extra work into getting 3delight's OSL version here.
 	IECoreScene::ShaderNetworkAlgo::convertToOSLConventions( result.get(), OSL_VERSION );
 
 	// IECoreScene::ShaderNetworkAlgo tries to expand ramps according to the correct naming convention
