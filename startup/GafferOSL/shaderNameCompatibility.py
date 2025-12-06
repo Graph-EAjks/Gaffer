@@ -34,6 +34,7 @@
 #
 ##########################################################################
 
+import Gaffer
 import GafferOSL
 
 __nameMapping = {
@@ -159,3 +160,13 @@ def __loadShaderWrapper( originalLoadShader ) :
 	return loadRenamedShader
 
 GafferOSL.OSLShader.loadShader = __loadShaderWrapper( GafferOSL.OSLShader.loadShader )
+
+
+def __splineAliasForRamps( plug ) :
+
+	if plug.node()["name"].getValue() in [ "Pattern/ColorRamp", "Pattern/FloatRamp" ]:
+		return "ramp"
+
+	return None
+
+Gaffer.Metadata.registerValue( GafferOSL.OSLShader, "parameters", "compatibility:childAlias:spline", __splineAliasForRamps )
