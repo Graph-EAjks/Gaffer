@@ -963,7 +963,7 @@ class RendererTest( GafferTest.TestCase ) :
 
 	def test3DelightSplineParameters( self ) :
 
-		# Converting from OSL parameters to Gaffer spline parameters is
+		# Converting from OSL parameters to Gaffer ramp parameters is
 		# tested in GafferOSLTest.OSLShaderTest
 
 		r = GafferScene.Private.IECoreScenePreview.Renderer.create(
@@ -1113,7 +1113,7 @@ class RendererTest( GafferTest.TestCase ) :
 		self.assertNotIn( "inconsistentNameSplineValues", shader )
 		self.assertNotIn( "inconsistentNameSplineBasis", shader )
 
-	def testGafferSplineParameters( self ) :
+	def testGafferRampParameters( self ) :
 
 		r = GafferScene.Private.IECoreScenePreview.Renderer.create(
 			"3Delight",
@@ -1123,11 +1123,11 @@ class RendererTest( GafferTest.TestCase ) :
 
 		network = IECoreScene.ShaderNetwork(
 			shaders = {
-				"splineHandle" : IECoreScene.Shader(
-					"Pattern/ColorSpline",
+				"rampHandle" : IECoreScene.Shader(
+					"Pattern/ColorRamp",
 					"osl:shader",
 					{
-						"spline" : IECore.RampfColor3f(
+						"ramp" : IECore.RampfColor3f(
 							[
 								( 0, imath.Color3f( 1, 0, 0 ) ),
 								( 0, imath.Color3f( 1, 0, 0 ) ),
@@ -1141,9 +1141,9 @@ class RendererTest( GafferTest.TestCase ) :
 				"constHandle" : IECoreScene.Shader( "Surface/Constant", "osl:surface", {} )
 			},
 			connections = [
-				( ( "splineHandle", "" ), ( "constHandle", "Cs" ) ),
+				( ( "rampHandle", "" ), ( "constHandle", "Cs" ) ),
 			],
-			output = "splineHandle"
+			output = "rampHandle"
 		)
 
 		o = r.object(
@@ -1162,9 +1162,9 @@ class RendererTest( GafferTest.TestCase ) :
 		self.assertEqual( len( shaders ), 1 )
 		shader = shaders[next( iter( shaders ) )]
 
-		self.assertEqual( shader["splinePositions"], [ 0, 0, 0, 1, 1, 1 ] )
+		self.assertEqual( shader["rampPositions"], [ 0, 0, 0, 1, 1, 1 ] )
 		self.assertEqual(
-			shader["splineValues"],
+			shader["rampValues"],
 			[
 				imath.Color3f( 1, 0, 0 ),
 				imath.Color3f( 1, 0, 0 ),
@@ -1174,7 +1174,7 @@ class RendererTest( GafferTest.TestCase ) :
 				imath.Color3f( 0, 0, 1 )
 			]
 		)
-		self.assertEqual( shader["splineBasis"], "linear" )
+		self.assertEqual( shader["rampBasis"], "linear" )
 
 	def testUVCoordShaderInserted( self ) :
 

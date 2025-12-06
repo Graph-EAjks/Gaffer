@@ -122,7 +122,7 @@ class ImageScatterTest( GafferSceneTest.SceneTestCase ) :
 				self.assertEqual( len( points["width"].data ), len( points["P"].data ) )
 
 				for i, c in enumerate( points["Cs"].data ) :
-					# Expected spline value
+					# Expected ramp value
 					x = points["P"].data[i].x / pixelAspect
 					x = (x - 0.5) / 2.0
 					x = max( 0, min( x, 1 ) )

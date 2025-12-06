@@ -69,7 +69,7 @@ class RampPlugSerialiser : public ValuePlugSerialiser
 			std::string result = ValuePlugSerialiser::postConstructor( plug, identifier, serialisation );
 			if( !omitValue( plug, serialisation ) )
 			{
-				// This isn't ideal, but the newly constructed spline plug will already have child plugs representing the points for the
+				// This isn't ideal, but the newly constructed ramp plug will already have child plugs representing the points for the
 				// default value. So we get rid of those so the real value can be loaded appropriately by serialising plug constructors
 				// (see below).
 				result += identifier + ".clearPoints()\n";

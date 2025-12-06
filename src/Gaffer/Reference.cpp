@@ -649,8 +649,8 @@ void Reference::loadInternal( const std::filesystem::path &fileName )
 			)
 			{
 				// Avoid recursion as it makes it impossible to serialise
-				// the `x/y` children of spline points. See RampPlugSerialiser
-				// for further details of spline serialisation.
+				// the `x/y` children of ramp points. See RampPlugSerialiser
+				// for further details of ramp serialisation.
 				continue;
 			}
 

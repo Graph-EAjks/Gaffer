@@ -53,7 +53,7 @@ class RampWidget( GafferUI.Widget ) :
 
 	DrawMode = enum.Enum( "DrawMode", [ "Invalid", "Ramp", "Splines" ] )
 
-	def __init__( self, splineDefinition=None, drawMode=DrawMode.Splines, **kw ) :
+	def __init__( self, ramp=None, drawMode=DrawMode.Splines, **kw ) :
 
 		# using QFrame rather than QWidget because it supports computing the contentsRect() based on
 		# the stylesheet.
@@ -63,8 +63,8 @@ class RampWidget( GafferUI.Widget ) :
 
 		self.setDrawMode( drawMode )
 
-		if splineDefinition == None :
-			splineDefinition = IECore.Rampff(
+		if ramp == None :
+			ramp = IECore.Rampff(
 				[
 					( 0, 0 ),
 					( 0, 0 ),
@@ -74,26 +74,26 @@ class RampWidget( GafferUI.Widget ) :
 				IECore.RampInterpolation.CatmullRom,
 			)
 
-		self.setRamp( splineDefinition )
+		self.setRamp( ramp )
 
 		self._qtWidget().paintEvent = Gaffer.WeakMethod( self.__paintEvent )
 
-	def setRamp( self, splineDefinition ) :
+	def setRamp( self, ramp ) :
 
 		try :
-			if splineDefinition==self.__splineDefinition :
+			if ramp==self.__ramp :
 				return
 		except :
 			pass
 
-		self.__splineDefinition = splineDefinition
+		self.__ramp = ramp
 		self.__splinesToDraw = None
 		self.__gradientToDraw = None
 		self._qtWidget().update()
 
 	def getRamp( self ) :
 
-		return self.__splineDefinition
+		return self.__ramp
 
 	def setDrawMode( self, drawMode ) :
 
@@ -132,7 +132,7 @@ class RampWidget( GafferUI.Widget ) :
 			self.__gradientToDraw = QtGui.QImage( QtCore.QSize( numStops, 1 ), QtGui.QImage.Format.Format_RGB32 )
 
 			displayTransform = self.displayTransform()
-			evaluator = self.__splineDefinition.evaluator()
+			evaluator = self.__ramp.evaluator()
 
 			for i in range( 0, numStops ) :
 				t = float( i + 0.5 ) / numStops
@@ -153,8 +153,8 @@ class RampWidget( GafferUI.Widget ) :
 		numPoints = 200
 		if not self.__splinesToDraw :
 			self.__splinesToDraw = []
-			evaluator = self.__splineDefinition.evaluator()
-			if isinstance( self.__splineDefinition, IECore.Rampff ) :
+			evaluator = self.__ramp.evaluator()
+			if isinstance( self.__ramp, IECore.Rampff ) :
 				spline = IECore.Struct()
 				spline.color = imath.Color3f( 1 )
 				spline.path = QtGui.QPainterPath()
@@ -167,7 +167,7 @@ class RampWidget( GafferUI.Widget ) :
 						spline.path.lineTo( t, c )
 				self.__splinesToDraw.append( spline )
 			else :
-				for i in range( 0, self.__splineDefinition.points()[0][1].dimensions() ) :
+				for i in range( 0, self.__ramp.points()[0][1].dimensions() ) :
 					spline = IECore.Struct()
 					if i==3 :
 						spline.color = imath.Color3f( 1 )

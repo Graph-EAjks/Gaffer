@@ -189,28 +189,24 @@ ccl::ShaderNode *convertWalk( const ShaderNetwork::Parameter &outputParameter, c
 		// "__", revert that change here.
 		string parameterName = boost::replace_first_copy( namedParameter.first.string(), "__", "." );
 
-		if( const RampffData *splineData = runTimeCast<const RampffData>( namedParameter.second.get() ) )
+		if( const RampffData *rampData = runTimeCast<const RampffData>( namedParameter.second.get() ) )
 		{
-			// \todo : Feels bad that there are no unit tests for this, but currently we don't even bind
-			// convertGraph() to Python, so I don't really want to go to the work of testing it while
-			// in the middle of reworking how we handle ramps.
-
-			// For OSL, splines are handled by convertToOSLConventions
+			// For OSL, ramps are handled by convertToOSLConventions
 			assert( !isOSLShader );
 
 			if( const ccl::SocketType *socket = node->type->find_input( ccl::ustring( parameterName.c_str() ) ) )
 			{
-				SocketAlgo::setRampSocket( node, socket, splineData->readable() );
+				SocketAlgo::setRampSocket( node, socket, rampData->readable() );
 			}
 		}
-		else if( const RampfColor3fData *splineData = runTimeCast<const RampfColor3fData>( namedParameter.second.get() ) )
+		else if( const RampfColor3fData *rampData = runTimeCast<const RampfColor3fData>( namedParameter.second.get() ) )
 		{
-			// For OSL, splines are handled by convertToOSLConventions
+			// For OSL, ramps are handled by convertToOSLConventions
 			assert( !isOSLShader );
 
 			if( const ccl::SocketType *socket = node->type->find_input( ccl::ustring( parameterName.c_str() ) ) )
 			{
-				SocketAlgo::setRampSocket( node, socket, splineData->readable() );
+				SocketAlgo::setRampSocket( node, socket, rampData->readable() );
 			}
 		}
 		else if( isImageTexture && parameterName == "filename" )

@@ -88,8 +88,8 @@ AtVector2 curvePoint( const Rampff::Point &point )
 
 void setShutterCurveParameter( AtNode *camera, const IECore::Data *value, const std::string &messageContext )
 {
-	auto *splineData = runTimeCast<const IECore::RampffData>( value );
-	if( !splineData )
+	auto *rampData = runTimeCast<const IECore::RampffData>( value );
+	if( !rampData )
 	{
 		msg( Msg::Warning, messageContext, fmt::format( "Unsupported value type \"{}\" (expected RampffData).", value->typeName() ) );
 		return;
@@ -97,7 +97,7 @@ void setShutterCurveParameter( AtNode *camera, const IECore::Data *value, const 
 
 
 	AtArray *array;
-	const Rampff &ramp = splineData->readable();
+	const Rampff &ramp = rampData->readable();
 	if( ramp.interpolation == IECore::RampInterpolation::Linear )
 	{
 		array = AiArrayAllocate( ramp.points.size(), 1, AI_TYPE_VECTOR2 );

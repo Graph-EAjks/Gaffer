@@ -1039,7 +1039,7 @@ bool findSplineParametersFromPositions( const std::string &shaderName, const OSL
 	return success;
 }
 
-std::optional<RampPlugArguments> splinePlugArgumentsFromPositions( const std::string &shaderName, const OSLQuery &query, const OSLQuery::Parameter *positionsParameter, const std::string &prefix, std::unordered_set<const OSLQuery::Parameter *> &parametersAlreadyProcessed )
+std::optional<RampPlugArguments> rampPlugArgumentsFromPositions( const std::string &shaderName, const OSLQuery &query, const OSLQuery::Parameter *positionsParameter, const std::string &prefix, std::unordered_set<const OSLQuery::Parameter *> &parametersAlreadyProcessed )
 {
 
 	string nameWithoutSuffix;
@@ -1234,7 +1234,7 @@ Gaffer::Plug *loadRampParameterFromDefault( const InternedString &name, const ty
 	// Other parameters are loaded using replacePlug if existingPlug is non-null, so existing connections
 	// and values are preserved. It might make sense to do that here as well, but there could be
 	// inconsistencies if the length of the default value has changed, and the user has only overridden
-	// a few control points ... we haven't tested how well replacePlug works on splines, so for the moment
+	// a few control points ... we haven't tested how well replacePlug works on ramps, so for the moment
 	// we'll just throw away previous values here ( this currently isn't causing any problems, so we won't
 	// change it ).
 
@@ -1250,16 +1250,16 @@ void loadShaderParameters( const std::string &shaderName, const OSLQuery &query,
 	set<const Plug *> validPlugs;
 
 	// Spline parameters are a nasty special case because multiple shader
-	// parameters become a single plug on the node, so we deal with them
+	// parameters become a single ramp plug on the node, so we deal with them
 	// first, and use this set to record parameters that have already been
-	// processed as part of a spline.
+	// processed as part of a ramp.
 
 	std::unordered_set<const OSLQuery::Parameter *> parametersAlreadyProcessed;
-	std::unordered_map<const OSLQuery::Parameter *, RampPlugArguments > splinePlugArguments;
+	std::unordered_map<const OSLQuery::Parameter *, RampPlugArguments > rampPlugArguments;
 
 	for( size_t i = 0; i < query.nparams(); ++i )
 	{
-		// We will check whether this parameter fits as the positions parameter of a spline
+		// We will check whether this parameter fits as the positions parameter of a ramp
 		const OSLQuery::Parameter *positionsParameter = query.getparam( i );
 		const Plug::Direction direction = positionsParameter->isoutput ? Plug::Out : Plug::In;
 		if( direction != parent->direction() )
@@ -1279,16 +1279,15 @@ void loadShaderParameters( const std::string &shaderName, const OSLQuery &query,
 			continue;
 		}
 
-		auto splineP = splinePlugArgumentsFromPositions( shaderName, query, positionsParameter, prefix, parametersAlreadyProcessed );
+		auto rampP = rampPlugArgumentsFromPositions( shaderName, query, positionsParameter, prefix, parametersAlreadyProcessed );
 
-		// This is a very weird way of saying "The variant isn't empty", but it seems to be the modern C++ convention )
-		if( splineP )
+		if( rampP )
 		{
-			splinePlugArguments[positionsParameter] = *splineP;
+			rampPlugArguments[positionsParameter] = *rampP;
 		}
 	}
 
-	// Now process all the normal parameters that aren't part of a spline
+	// Now process all the normal parameters that aren't part of a ramp
 	for( size_t i = 0; i < query.nparams(); ++i )
 	{
 		const OSLQuery::Parameter *parameter = query.getparam( i );
@@ -1312,25 +1311,25 @@ void loadShaderParameters( const std::string &shaderName, const OSLQuery &query,
 
 		if( parametersAlreadyProcessed.count( parameter ) )
 		{
-			// Already loaded as part of a spline
+			// Already loaded as part of a ramp
 			continue;
 		}
 
 		Plug *plug = nullptr;
 
-		auto splineIt = splinePlugArguments.find( parameter );
-		if( splineIt != splinePlugArguments.end() )
+		auto rampIt = rampPlugArguments.find( parameter );
+		if( rampIt != rampPlugArguments.end() )
 		{
-			// This is the key parameter for the spline, time to output this spline
-			// ( We need to wait until now to output the spline so it gets interleaved in proper
-			// order with the non-spline parameters )
-			if( std::holds_alternative< RampfColor3f >( splineIt->second.defaultValue ) )
+			// This is the key parameter for the ramp, time to output this ramp
+			// ( We need to wait until now to output the ramp so it gets interleaved in proper
+			// order with the non-ramp parameters )
+			if( std::holds_alternative< RampfColor3f >( rampIt->second.defaultValue ) )
 			{
-				plug = loadRampParameterFromDefault<RampfColor3fPlug>( splineIt->second.name, std::get<RampfColor3f>( splineIt->second.defaultValue ), parent );
+				plug = loadRampParameterFromDefault<RampfColor3fPlug>( rampIt->second.name, std::get<RampfColor3f>( rampIt->second.defaultValue ), parent );
 			}
 			else
 			{
-				plug = loadRampParameterFromDefault<RampffPlug>( splineIt->second.name, std::get<Rampff>( splineIt->second.defaultValue ), parent );
+				plug = loadRampParameterFromDefault<RampffPlug>( rampIt->second.name, std::get<Rampff>( rampIt->second.defaultValue ), parent );
 			}
 		}
 		else
@@ -1561,10 +1560,10 @@ static IECore::ConstCompoundDataPtr metadataGetter( const std::string &shaderNam
 
 	std::unordered_set<const OSLQuery::Parameter *> parametersAlreadyProcessed;
 
-	// First look for splines, where any metadata on component parameters should be registered onto the spline plug
+	// First look for ramps, where any metadata on component parameters should be registered onto the ramp plug
 	for( size_t i = 0; i < query.nparams(); ++i )
 	{
-		// We will check whether this parameter fits as the positions parameter of a spline
+		// We will check whether this parameter fits as the positions parameter of a ramp
 		const OSLQuery::Parameter *positionsParameter = query.getparam( i );
 
 		string nameWithoutSuffix;
@@ -1572,7 +1571,7 @@ static IECore::ConstCompoundDataPtr metadataGetter( const std::string &shaderNam
 		const OSLQuery::Parameter *basisParameter;
 		const OSLQuery::Parameter *countParameter;
 
-		// If this parameter is part of a spline, register the metadata onto the spline plug
+		// If this parameter is part of a ramp, register the metadata onto the ramp plug
 		if( !findSplineParametersFromPositions( shaderName, query, positionsParameter, nameWithoutSuffix, valuesParameter, basisParameter, countParameter, parametersAlreadyProcessed ) )
 		{
 			continue;

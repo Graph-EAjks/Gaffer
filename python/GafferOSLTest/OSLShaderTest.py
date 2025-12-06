@@ -451,7 +451,7 @@ class OSLShaderTest( GafferOSLTest.OSLTestCase ) :
 		n = GafferOSL.OSLShader()
 		n.loadShader( s )
 
-		# If the components of the spline all match, the metadata is registered to the spline plug
+		# If the components of the spline all match, the metadata is registered to the ramp plug
 		self.assertEqual( n.parameterMetadata( n["parameters"]["correctSpline"], "a" ), 1 )
 		self.assertEqual( n.parameterMetadata( n["parameters"]["correctSpline"], "b" ), 2 )
 		self.assertEqual( n.parameterMetadata( n["parameters"]["correctSpline"], "c" ), 3 )
@@ -1212,9 +1212,9 @@ class OSLShaderTest( GafferOSLTest.OSLTestCase ) :
 		s['n'] = GafferOSL.OSLShader()
 		s['n'].loadShader( shad )
 
-		splineValue = IECore.RampfColor3f( [ ( random.random(), imath.Color3f( random.random(), random.random(), random.random() ) ) for i in range( 10 ) ], IECore.RampInterpolation.Linear )
+		rampValue = IECore.RampfColor3f( [ ( random.random(), imath.Color3f( random.random(), random.random(), random.random() ) ) for i in range( 10 ) ], IECore.RampInterpolation.Linear )
 
-		s['n']["parameters"]["colorSpline"].setValue( splineValue )
+		s['n']["parameters"]["colorSpline"].setValue( rampValue )
 
 		serialised = s.serialise()
 
@@ -1228,7 +1228,7 @@ class OSLShaderTest( GafferOSLTest.OSLTestCase ) :
 
 		s2 = Gaffer.ScriptNode()
 		s2.execute( serialised )
-		self.assertEqual( s2['n']["parameters"]["colorSpline"].getValue(), splineValue )
+		self.assertEqual( s2['n']["parameters"]["colorSpline"].getValue(), rampValue )
 
 	def testComponentToComponentConnections( self ) :
 

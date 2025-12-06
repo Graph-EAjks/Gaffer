@@ -404,7 +404,7 @@ class RampPlugTest( GafferTest.TestCase ) :
 
 	def testPromoteToBox( self ) :
 
-		spline = IECore.Rampff(
+		ramp = IECore.Rampff(
 			(
 				( 0, 0 ),
 				( 0.2, 0.3 ),
@@ -416,7 +416,7 @@ class RampPlugTest( GafferTest.TestCase ) :
 
 		s = Gaffer.ScriptNode()
 		s["n"] = Gaffer.Node()
-		s["n"]["p"] = Gaffer.RampffPlug( defaultValue=spline )
+		s["n"]["p"] = Gaffer.RampffPlug( defaultValue=ramp )
 
 		b = Gaffer.Box.create( s, Gaffer.StandardSet( [ s["n"] ] ) )
 		p = Gaffer.PlugAlgo.promote( b["n"]["p"] )
@@ -430,7 +430,7 @@ class RampPlugTest( GafferTest.TestCase ) :
 
 	def testPromoteToBoxWithExtraPoints( self ) :
 
-		spline = IECore.Rampff(
+		ramp = IECore.Rampff(
 			(
 				( 0, 0 ),
 				( 0.2, 0.3 ),
@@ -442,7 +442,7 @@ class RampPlugTest( GafferTest.TestCase ) :
 
 		s = Gaffer.ScriptNode()
 		s["n"] = Gaffer.Node()
-		s["n"]["p"] = Gaffer.RampffPlug( defaultValue=spline )
+		s["n"]["p"] = Gaffer.RampffPlug( defaultValue=ramp )
 		i = s["n"]["p"].addPoint()
 		s["n"]["p"][i]["x"].setValue( 0.1 )
 		s["n"]["p"][i]["y"].setValue( 0.2 )

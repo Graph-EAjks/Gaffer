@@ -48,7 +48,7 @@ namespace Gaffer
 
 /// The RampPlug allows the user to manipulate an IECore::Ramp, which is
 /// a simple curve representation with a list of control points and an
-/// interpolations.
+/// interpolation.
 //
 /// Rather than storing the value atomically, the
 /// points and interpolation are represented as individual plugs,
@@ -76,7 +76,7 @@ class GAFFER_API RampPlug : public ValuePlug
 		~RampPlug() override;
 
 		/// Implemented to only accept children which are suitable for use as points
-		/// in the spline.
+		/// in the ramp.
 		bool acceptsChild( const GraphComponent *potentialChild ) const override;
 		PlugPtr createCounterpart( const std::string &name, Direction direction ) const override;
 
@@ -95,10 +95,7 @@ class GAFFER_API RampPlug : public ValuePlug
 		IntPlug *interpolationPlug();
 		const IntPlug *interpolationPlug() const;
 
-		/// Returns the number of point plugs - note that
-		/// because duplicate endpoints are not stored directly as
-		/// plugs, this may differ from the number of points
-		/// in the spline passed to setValue().
+		/// Returns the number of point plugs
 		unsigned numPoints() const;
 		/// \undoable
 		unsigned addPoint();

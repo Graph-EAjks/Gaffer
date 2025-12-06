@@ -286,7 +286,7 @@ Gaffer::Plug *loadParameter( const boost::property_tree::ptree &parameter, Plug 
 	if( parameter.get<string>( "<xmlattr>.isDynamicArray", "0" ) == "1" )
 	{
 		// Ramp parameters are handled separately in findRampPlugFromPositionsParameter,
-		// leaving very few examples of non-spline array parameters in the
+		// leaving very few examples of non-ramp array parameters in the
 		// standard RenderMan shaders. All non-spline arrays seem to be used to
 		// provide an array of connections rather than values - see
 		// `PxrSurface.utilityPattern` for example. So we load as an
@@ -538,12 +538,12 @@ PlugPtr findRampPlugFromPositionsParameter(
 
 void loadParameters( const boost::property_tree::ptree &tree, Plug *parent, const ParameterSet *omit, std::unordered_set<const Plug *> &validPlugs )
 {
-	// In order to assemble together the parameters needed to build a spline, we need to be able to look up
+	// In order to assemble together the parameters needed to build a ramp, we need to be able to look up
 	// parameters by name. Build a map of all the parameters that we should be building plugs from
 	std::map<std::string, const boost::property_tree::ptree *> parameters;
 
 	std::unordered_set<const boost::property_tree::ptree*> parametersAlreadyProcessed;
-	std::unordered_map<const boost::property_tree::ptree*, PlugPtr > splinePlugs;
+	std::unordered_map<const boost::property_tree::ptree*, PlugPtr > rampPlugs;
 
 	for( const auto &child : tree )
 	{
@@ -560,25 +560,25 @@ void loadParameters( const boost::property_tree::ptree &tree, Plug *parent, cons
 		}
 	}
 
-	// Find the splines
+	// Find the ramps
 	for( const auto &param : parameters )
 	{
-		PlugPtr spline;
+		PlugPtr ramp;
 		try
 		{
-			spline = findRampPlugFromPositionsParameter( param.first, *param.second, parameters, parent->direction(), parametersAlreadyProcessed );
+			ramp = findRampPlugFromPositionsParameter( param.first, *param.second, parameters, parent->direction(), parametersAlreadyProcessed );
 		}
 		catch( std::exception &e )
 		{
 			msg(
 				IECore::Msg::Warning, "RenderManShader::loadShader",
-				fmt::format( "Error while parsing spline based on \"{}\" : {}", param.first, e.what() )
+				fmt::format( "Error while parsing ramp based on \"{}\" : {}", param.first, e.what() )
 			);
 		}
 
-		if( spline )
+		if( ramp )
 		{
-			splinePlugs[ param.second ] = spline;
+			rampPlugs[ param.second ] = ramp;
 		}
 	}
 
@@ -601,11 +601,11 @@ void loadParameters( const boost::property_tree::ptree &tree, Plug *parent, cons
 			continue;
 		}
 
-		auto splineIt = splinePlugs.find( &child.second );
-		if( splineIt != splinePlugs.end() )
+		auto rampIt = rampPlugs.find( &child.second );
+		if( rampIt != rampPlugs.end() )
 		{
-			parent->addChild( splineIt->second );
-			validPlugs.insert( splineIt->second.get() );
+			parent->addChild( rampIt->second );
+			validPlugs.insert( rampIt->second.get() );
 			continue;
 		}
 

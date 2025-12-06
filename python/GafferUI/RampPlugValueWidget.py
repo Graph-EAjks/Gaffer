@@ -45,11 +45,11 @@ class RampPlugValueWidget( GafferUI.PlugValueWidget ) :
 
 	def __init__( self, plug, **kw ) :
 
-		self.__splineWidget = GafferUI.RampWidget()
+		self.__rampWidget = GafferUI.RampWidget()
 
-		GafferUI.PlugValueWidget.__init__( self, self.__splineWidget, plug, **kw )
+		GafferUI.PlugValueWidget.__init__( self, self.__rampWidget, plug, **kw )
 
-		self.__splineWidget._qtWidget().setFixedHeight( 20 )
+		self.__rampWidget._qtWidget().setFixedHeight( 20 )
 
 		self.buttonPressSignal().connect( Gaffer.WeakMethod( self.__buttonPress ) )
 
@@ -57,32 +57,28 @@ class RampPlugValueWidget( GafferUI.PlugValueWidget ) :
 
 		self.setPlug( plug )
 
-	def splineWidget( self ) :
-
-		return self.__splineWidget
-
 	def setPlug( self, plug ) :
 
 		GafferUI.PlugValueWidget.setPlug( self, plug )
 
 		if isinstance( plug, ( Gaffer.RampfColor3fPlug, Gaffer.RampfColor4fPlug ) ) :
-			self.__splineWidget.setDrawMode( GafferUI.RampWidget.DrawMode.Ramp )
+			self.__rampWidget.setDrawMode( GafferUI.RampWidget.DrawMode.Ramp )
 		else :
-			self.__splineWidget.setDrawMode( GafferUI.RampWidget.DrawMode.Splines )
+			self.__rampWidget.setDrawMode( GafferUI.RampWidget.DrawMode.Splines )
 
 	def setHighlighted( self, highlighted ) :
 
 		GafferUI.PlugValueWidget.setHighlighted( self, highlighted )
 
-		self.splineWidget().setHighlighted( highlighted )
+		self.__rampWidget.setHighlighted( highlighted )
 
 	def _updateFromValues( self, values, exception ) :
 
 		if values :
 			assert( len( values ) == 1 )
-			self.__splineWidget.setRamp( values[0] )
+			self.__rampWidget.setRamp( values[0] )
 		else :
-			self.__splineWidget.setRamp(
+			self.__rampWidget.setRamp(
 				IECore.Rampff( [ ( 0, 0.3 ), ( 1, 0.3 ) ], IECore.RampInterpolation.Linear ),
 			)
 
@@ -168,12 +164,12 @@ class _RampPlugEditValueWidget( GafferUI.PlugValueWidget ) :
 				GafferUI.Spacer( imath.V2i( 0 ), parenting = { "expand" : True } )
 				GafferUI.PlugWidget( GafferUI.PlugValueWidget.create( plug["interpolation"] ) )
 
-			self.__splineWidget = GafferUI.RampWidget()
+			self.__rampWidget = GafferUI.RampWidget()
 			if isinstance( plug, ( Gaffer.RampfColor3fPlug, Gaffer.RampfColor4fPlug ) ) :
-				self.__splineWidget.setDrawMode( self.__splineWidget.DrawMode.Ramp )
+				self.__rampWidget.setDrawMode( self.__rampWidget.DrawMode.Ramp )
 			else:
-				self.__splineWidget.setDrawMode( self.__splineWidget.DrawMode.Splines )
-			self.__splineWidget._qtWidget().setMinimumHeight( 50 )
+				self.__rampWidget.setDrawMode( self.__rampWidget.DrawMode.Splines )
+			self.__rampWidget._qtWidget().setMinimumHeight( 50 )
 
 			self.__slider = GafferUI.Slider()
 			self.__slider.setMinimumSize( 2 )
@@ -218,7 +214,7 @@ class _RampPlugEditValueWidget( GafferUI.PlugValueWidget ) :
 
 	def __drawModeChanged( self, drawModeWidget ) :
 		name = drawModeWidget.getSelection()[0]
-		self.__splineWidget.setDrawMode( self.__splineWidget.DrawMode.Ramp if name == "Ramp" else self.__splineWidget.DrawMode.Splines )
+		self.__rampWidget.setDrawMode( self.__rampWidget.DrawMode.Ramp if name == "Ramp" else self.__rampWidget.DrawMode.Splines )
 
 	def setPlug( self, plug ) :
 
@@ -246,7 +242,7 @@ class _RampPlugEditValueWidget( GafferUI.PlugValueWidget ) :
 
 		return [
 			{
-				"splineDefinition" : p.getValue(),
+				"ramp" : p.getValue(),
 				# We can't get these positions from `spline`, because we need
 				# them to have the same order as the point plugs.
 				"positions" : [ p.pointXPlug( i ).getValue() for i in range( 0, p.numPoints() ) ],
@@ -258,7 +254,7 @@ class _RampPlugEditValueWidget( GafferUI.PlugValueWidget ) :
 
 		assert( len( values ) < 2 )
 		if len( values ) :
-			self.__splineWidget.setRamp( values[0]["splineDefinition"] )
+			self.__rampWidget.setRamp( values[0]["ramp"] )
 			with Gaffer.Signals.BlockedConnection( self.__positionsChangedConnection ) :
 				self.__slider.setValues( values[0]["positions"] )
 
