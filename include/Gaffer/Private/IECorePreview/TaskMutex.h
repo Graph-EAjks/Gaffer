@@ -46,9 +46,51 @@
 #include "tbb/task_arena.h"
 #include "tbb/task_group.h"
 
+#if !defined( __aarch64__ )
+#include <immintrin.h>
+#endif
 #include <iostream>
 #include <optional>
 #include <thread>
+
+namespace
+{
+	/// Exponential backoff based on tbb::internal::atomic_backoff, which
+	/// we have reimplemented as it is no longer available in oneTBB.
+	struct AtomicBackoff : boost::noncopyable
+	{
+
+		AtomicBackoff() : m_count( 1 ) {}
+
+		void pause()
+		{
+			// Time delay, in units of "pause" instructions.
+			// Should be equal to approximately the number of "pause" instructions
+			// that take the same time as a context switch. Must be a power of two.
+			if( m_count <= 16 )
+			{
+				for( int32_t i = 0; i < m_count; ++i )
+				{
+					#if defined( __aarch64__ )
+					__asm__ __volatile__( "yield" ::: "memory" );
+					#else
+					_mm_pause();
+					#endif
+				}
+				// Pause twice as long the next time.
+				m_count *= 2;
+			}
+			else
+			{
+				// Pause is so long that we might as well yield CPU to scheduler.
+				std::this_thread::yield();
+			}
+		}
+
+		int32_t m_count;
+
+	};
+} // namespace
 
 namespace IECorePreview
 {
@@ -141,7 +183,7 @@ class TaskMutex : boost::noncopyable
 				/// work on behalf of `execute()` while waiting.
 				void acquire( TaskMutex &mutex, bool write = true, bool acceptWork = true )
 				{
-					tbb::internal::atomic_backoff backoff;
+					AtomicBackoff backoff;
 					while( !acquireOr( mutex, write, [acceptWork]( bool workAvailable ){ return acceptWork; } ) )
 					{
 						backoff.pause();
