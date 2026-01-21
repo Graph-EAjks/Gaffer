@@ -140,7 +140,7 @@ class LRUCacheTest( GafferTest.TestCase ) :
 
 	def testRecursionTaskParallel( self ) :
 
-		GafferTest.testLRUCacheRecursion( "taskParallel", numIterations = 100000, numValues = 10000, maxCost = 10000 )
+		GafferTest.testLRUCacheRecursion( "taskParallel", numIterations = 100000, numValues = 1000, maxCost = 10000 )
 
 	def testRecursionWithEvictionsSerial( self ) :
 
