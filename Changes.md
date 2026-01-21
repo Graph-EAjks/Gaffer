@@ -5,6 +5,7 @@ Fixes
 -----
 
 - ShaderTweaks : Fixed context handling in "From Affected" and "From Selected" menu items.
+- RenderMan : Fixed offset when reducing crop window size in RIS (#6727).
 
 API
 ---
