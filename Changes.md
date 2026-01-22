@@ -1,6 +1,11 @@
 1.6.x.x (relative to 1.6.9.1)
 =======
 
+Improvements
+------------
+
+- SceneTestCase : Added GlobalsSanitiser.
+
 Fixes
 -----
 
@@ -12,6 +17,7 @@ API
 
 - PlugCreationWidget : Added `context()` method.
 - TestRunner : Added `PerformanceTestMethod.isDecorated()` for detection of performance test methods.
+- GlobalsSanitiser : Added monitor for detecting `ScenePlug.globals` computations depending on other aspects of the scene.
 
 1.6.9.1 (relative to 1.6.9.0)
 =======
