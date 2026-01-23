@@ -5,11 +5,13 @@ Fixes
 -----
 
 - ShaderTweaks : Fixed context handling in "From Affected" and "From Selected" menu items.
+- SceneTestCase, ImageTestCase : Sanitisers are no longer installed when testing performance, since they add additional overhead.
 
 API
 ---
 
 - PlugCreationWidget : Added `context()` method.
+- TestRunner : Added `PerformanceTestMethod.isDecorated()` for detection of performance test methods.
 
 1.6.9.1 (relative to 1.6.9.0)
 =======
