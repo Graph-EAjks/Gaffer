@@ -255,6 +255,13 @@ class RenderPassAdaptorTest( GafferSceneTest.SceneTestCase ) :
 
 					image = IECore.Reader.create( str( self.temporaryDirectory() / "reflection.exr" ) ).read()
 
+					print( "Test : ", withCustomAttribute, catcher, caster )
+					print( "Channels :" )
+					for k in image.keys() :
+						print( k, len( image[k] ) )
+					print( "Data window : ", image.dataWindow )
+					print( "Display window : ", image.displayWindow )
+
 					upperPixel = self.__colorAtUV( image, imath.V2f( 0.5, 0.05 ) )
 					middlePixel = self.__colorAtUV( image, imath.V2f( 0.5 ) )
 					lowerPixel = self.__colorAtUV( image, imath.V2f( 0.5, 0.95 ) )
