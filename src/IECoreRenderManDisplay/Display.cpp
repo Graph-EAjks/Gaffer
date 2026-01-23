@@ -327,7 +327,6 @@ PtDspyError DspyImageActiveRegion( PtDspyImageHandle imageHandle, int xMin, int 
 
 		// Close old driver. We do this after creating the new one so that Gaffer's Catalogue
 		// doesn't save the image prematurely.
-		/// \todo The order shouldn't matter any more.
 		oldDriver->imageClose();
 		return PkDspyErrorNone;
 	}
@@ -628,9 +627,6 @@ struct IEDisplay : public display::Display
 				// We hold the old driver until after creating the new driver, which allows
 				// the catalogue to recognize that the driver matches, and should still be writing to the same
 				// catalogue image.
-				/// \todo This is no longer necessary, and we should also be able to return to creating
-				/// the driver in `Rebind()` where it makes most sense, since we now always recreate
-				/// the render view when crop changes (consider reverting fa8e230baec290d8f1e07f9327979660f372da60).
 				IECoreImage::DisplayDriverPtr oldDriver = m_driver;
 
 				const StringData *driverType = m_parameters->member<StringData>( "driverType", /* throwIfMissing = */ true );
