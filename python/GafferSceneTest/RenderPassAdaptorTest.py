@@ -233,8 +233,8 @@ class RenderPassAdaptorTest( GafferSceneTest.SceneTestCase ) :
 		s["render"]["in"].setInput( s["rendererOptions"]["out"] )
 
 		for withCustomAttribute, testColor, error in [
-			( False, imath.Color4f( 1, 0, 0, 1 ), 0.01 ),
 			( True, imath.Color4f( 0.2, 0, 0, 1 ), 0.15 ),
+			( False, imath.Color4f( 1, 0, 0, 1 ), 0.01 ),
 		] :
 
 			for catcher, caster in [
