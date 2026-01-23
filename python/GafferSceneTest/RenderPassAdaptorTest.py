@@ -259,6 +259,8 @@ class RenderPassAdaptorTest( GafferSceneTest.SceneTestCase ) :
 					print( "Channels :" )
 					for k in image.keys() :
 						print( k, len( image[k] ) )
+					import subprocess
+					print( subprocess.check_output( [ "exrheader", str( self.temporaryDirectory() / "reflection.exr" ) ], text = True ) )
 					print( "Data window : ", image.dataWindow )
 					print( "Display window : ", image.displayWindow )
 
