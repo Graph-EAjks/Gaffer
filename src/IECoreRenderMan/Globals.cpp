@@ -593,16 +593,16 @@ void Globals::updateRenderView()
 
 	const float *oldCropWindow = m_options.GetFloatArray( Loader::strings().k_Ri_CropWindow, 4 );
 	const float *newCropWindow = camera.options.GetFloatArray( Loader::strings().k_Ri_CropWindow, 4 );
-	std::cerr << "CROP WINDOWS : " << oldCropWindow << " " << newCropWindow << std::endl;
-	if( oldCropWindow && newCropWindow && !std::equal( oldCropWindow, oldCropWindow + 4, newCropWindow ) )
-	{
-		// The `quicklyNoiseless` driver doesn't handle interactive edits to the
-		// crop window - it variously crashes, offsets the image, or fails to clear
-		// the area outside the data window. So when the crop changes we delete the
-		// render view and create new drivers from scratch.
-		std::cerr << "DELETING FROM UPDATE" << std::endl;
-		deleteRenderView();
-	}
+	// std::cerr << "CROP WINDOWS : " << oldCropWindow << " " << newCropWindow << std::endl;
+	// if( oldCropWindow && newCropWindow && !std::equal( oldCropWindow, oldCropWindow + 4, newCropWindow ) )
+	// {
+	// 	// The `quicklyNoiseless` driver doesn't handle interactive edits to the
+	// 	// crop window - it variously crashes, offsets the image, or fails to clear
+	// 	// the area outside the data window. So when the crop changes we delete the
+	// 	// render view and create new drivers from scratch.
+	// 	std::cerr << "DELETING FROM UPDATE" << std::endl;
+	// 	deleteRenderView();
+	// }
 
 	m_options.Update( camera.options );
 	m_session->riley->SetOptions( m_options );
