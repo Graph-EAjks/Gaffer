@@ -591,9 +591,9 @@ void Globals::updateRenderView()
 		camera.id = m_defaultCamera;
 	}
 
-	const float *oldCropWindow = m_options.GetFloatArray( Loader::strings().k_Ri_CropWindow, 4 );
+	//const float *oldCropWindow = m_options.GetFloatArray( Loader::strings().k_Ri_CropWindow, 4 );
 	//const float *newCropWindow = camera.options.GetFloatArray( Loader::strings().k_Ri_CropWindow, 4 );
-	std::cerr << "CROP WINDOWS : " << oldCropWindow << std::endl;//" " << newCropWindow << std::endl;
+	//std::cerr << "CROP WINDOWS : " << oldCropWindow << std::endl;//" " << newCropWindow << std::endl;
 	// if( oldCropWindow && newCropWindow && !std::equal( oldCropWindow, oldCropWindow + 4, newCropWindow ) )
 	// {
 	// 	// The `quicklyNoiseless` driver doesn't handle interactive edits to the
